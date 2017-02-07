@@ -19,6 +19,7 @@ def invent(attempts, num_cards, make_sheet=False, no_cards=False):
     font = ImageFont.truetype('LiberationSans-Bold.ttf', 16, encoding='unic')
     base = Image.open('CAH-blank-white.png').convert('RGBA') # 225px, 315px
     text_model = markovify.Text(open('wordlist.txt').read().decode('utf-8'))
+    sentences = []
 
     if make_sheet or no_cards:
         sheets = 0
@@ -32,7 +33,11 @@ def invent(attempts, num_cards, make_sheet=False, no_cards=False):
         text = Image.new('RGBA', base.size, (255,255,255,255))
         draw = ImageDraw.Draw(text)
 
-        sentence = fill(text_model.make_sentence(tries=attempts), 24)
+        sentence = text_model.make_sentence(tries=attempts).encode('utf-8')
+        while sentence in sentences:
+            sentence = text_model.make_sentence(tries=attempts).encode('utf-8')
+        sentences.append(sentence)
+        sentence = fill(sentence.decode('utf-8'), 24)
         # sentence = fill("Becoming so rich that you pop a boner.", 24)
 
         draw.multiline_text((16, 20), sentence, font=font, fill=(0, 0, 0, 255),
@@ -62,6 +67,9 @@ def invent(attempts, num_cards, make_sheet=False, no_cards=False):
     if make_sheet or no_cards:
         sheet.save(name.format('sheet-' + str(sheets + 1)), None, optimize=True,
                    compress_level=6)
+
+    with open('cards/cards.txt', 'wb') as fh:
+        fh.write('\n'.join(sentences))
 
 
 if __name__ == "__main__":
