@@ -10,7 +10,8 @@ from textwrap import fill
 from PIL import Image, ImageDraw, ImageFont
 
 
-def invent(attempts, num_cards, make_sheet=False, no_cards=False, dpi=82):
+def invent(attempts, num_cards, make_sheet=False, no_cards=False, dpi=82,
+           word_file='wordlist.txt'):
 
     if not os.path.isdir('cards'):
         os.mkdir('cards')
@@ -22,7 +23,7 @@ def invent(attempts, num_cards, make_sheet=False, no_cards=False, dpi=82):
     name = 'cards/CII-white-card-{}.png'
     font = ImageFont.truetype('LiberationSans-Bold.ttf', 16, encoding='unic')
     base = Image.open('CAH-blank-white.png').convert('RGBA') # 225px, 315px
-    text_model = markovify.Text(open('wordlist.txt').read().decode('utf-8'))
+    text_model = markovify.Text(open(word_file).read().decode('utf-8'))
     sentences = []
 
     if make_sheet or no_cards:
@@ -90,9 +91,12 @@ if __name__ == "__main__":
                       dest='no_cards', help="Don't save cards just write sheets [implies -s]")
     parser.add_option('-d', None, metavar='DPI', default=82, action='store',
                        type='int', dest='dpi', help="Generate US Legal sheets at this DPI")
+    parser.add_option('-w', None, metavar='WORDFILE', default='wordlist.txt',
+                      action='store', dest='word_file', help="Use this word file to generate markov chains from")
     (opts, args) = parser.parse_args()
 
     if opts.attempts < 10000:
         opts.attempts = 10000
 
-    invent(opts.attempts, opts.num_cards, opts.make_sheet, opts.no_cards, opts.dpi)
+    invent(opts.attempts, opts.num_cards, opts.make_sheet,
+           opts.no_cards, opts.dpi, opts.word_file)
