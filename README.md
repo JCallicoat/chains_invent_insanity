@@ -3,7 +3,9 @@ A Markov Chain-based [Cards Against Humanity](https://cardsagainsthumanity.com) 
 
 This is a CLI version of [the original version using flask](https://github.com/tuxotaku/chains-invent-insanity).
 
-Pillow is used to generate the individual card images or a sheet/sheets of cards on A4 sized paper at 300 DPI (11 x 10 cards per sheet).
+Pillow is used to generate the individual card images or a sheet / sheets of cards on A4 sized paper at 300 DPI (11 x 10 cards per sheet) for printing.
+
+The cards / sheets are output in a "cards" subdirectory in the current working directory.
 
 ## Usage:
 
@@ -20,3 +22,7 @@ Options:
                   individual cards
   -c, --no-cards  Don't save cards just write sheets [implies -s]
   ```
+
+## TODO:
+
+* Add ability to generate sheets from a directory of individual cards, so cards can be generated then hand picked to add to a sheet for printing.
