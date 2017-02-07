@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import os
+import math
 import optparse
 import markovify
 
@@ -9,12 +10,15 @@ from textwrap import fill
 from PIL import Image, ImageDraw, ImageFont
 
 
-US_LETTER = (2550, 3300) # 8.5in x 11in x 300dpi == 2550px x 3300px
+def invent(attempts, num_cards, make_sheet=False, no_cards=False, dpi=82):
 
-
-def invent(attempts, num_cards, make_sheet=False, no_cards=False):
     if not os.path.isdir('cards'):
         os.mkdir('cards')
+
+    us_letter = (int(8.5 * float(dpi)), int(11.0 * float(dpi)))
+    max_row = math.floor(us_letter[0] / 225)
+    max_col = math.floor(us_letter[1] / 315)
+
     name = 'cards/CII-white-card-{}.png'
     font = ImageFont.truetype('LiberationSans-Bold.ttf', 16, encoding='unic')
     base = Image.open('CAH-blank-white.png').convert('RGBA') # 225px, 315px
@@ -25,8 +29,8 @@ def invent(attempts, num_cards, make_sheet=False, no_cards=False):
         sheets = 0
         row = 0
         column = 0
-        sheet = Image.new('RGBA', US_LETTER, (255,255,255,255))
-        offset = [20, 20]
+        sheet = Image.new('RGBA', us_letter, (255,255,255,255))
+        offset = [0, 0]
 
     for i in xrange(num_cards):
         card = base.copy()
@@ -49,17 +53,17 @@ def invent(attempts, num_cards, make_sheet=False, no_cards=False):
 
         if make_sheet or no_cards:
             sheet.paste(card, tuple(offset))
-            if row == 10:
+            if row == max_row - 1:
                 row = 0
                 column += 1
-                offset = [20, offset[1] + 315]
-                if column == 10:
+                offset = [0, offset[1] + 315]
+                if column == max_col:
                     sheet.save(name.format('sheet-' + str(sheets + 1)), None,
                                optimize=True, compress_level=6)
-                    sheet = Image.new('RGBA', US_LETTER, (255,255,255,255))
+                    sheet = Image.new('RGBA', us_letter, (255,255,255,255))
                     sheets += 1
                     column = 0
-                    offset = [20, 20]
+                    offset = [0, 0]
             else:
                 row += 1
                 offset[0] += 225
@@ -84,9 +88,11 @@ if __name__ == "__main__":
                       dest='make_sheet', help='Make sheet(s) of cards for US Legal sized paper as well as individual cards')
     parser.add_option('-c', '--no-cards', default=False, action='store_true',
                       dest='no_cards', help="Don't save cards just write sheets [implies -s]")
+    parser.add_option('-d', None, metavar='DPI', default=82, action='store',
+                       type='int', dest='dpi', help="Generate US Legal sheets at this DPI")
     (opts, args) = parser.parse_args()
 
     if opts.attempts < 10000:
         opts.attempts = 10000
 
-    invent(opts.attempts, opts.num_cards, opts.make_sheet, opts.no_cards)
+    invent(opts.attempts, opts.num_cards, opts.make_sheet, opts.no_cards, opts.dpi)
