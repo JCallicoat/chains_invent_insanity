@@ -17,8 +17,8 @@ def invent(attempts, num_cards, make_sheet=False, no_cards=False, dpi=82,
         os.mkdir('cards')
 
     us_letter = (int(8.5 * float(dpi)), int(11.0 * float(dpi)))
-    max_row = math.floor(us_letter[0] / 225)
-    max_col = math.floor(us_letter[1] / 315)
+    max_row = math.floor(us_letter[0] / 225.0)
+    max_col = math.floor(us_letter[1] / 315.0)
 
     name = 'cards/CII-white-card-{}.png'
     font = ImageFont.truetype('LiberationSans-Bold.ttf', 16, encoding='unic')
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     parser.add_option('-c', '--no-cards', default=False, action='store_true',
                       dest='no_cards', help="Don't save cards just write sheets [implies -s]")
     parser.add_option('-d', None, metavar='DPI', default=82, action='store',
-                       type='int', dest='dpi', help="Generate US Legal sheets at this DPI")
+                       type='int', dest='dpi', help="Generate US Legal sheets at this DPI [default: 82]")
     parser.add_option('-w', None, metavar='WORDFILE', default='wordlist.txt',
                       action='store', dest='word_file', help="Use this word file to generate markov chains from")
     (opts, args) = parser.parse_args()

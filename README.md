@@ -21,7 +21,7 @@ Options:
   -s, --sheet     Make sheet(s) of cards for US Legal sized paper as well as
                   individual cards
   -c, --no-cards  Don't save cards just write sheets [implies -s]
-  -d DPI          Generate US Legal sheets at this DPI
+  -d DPI          Generate US Legal sheets at this DPI [default: 82]
   -w WORDFILE     Use this word file to generate markov chains from
   ```
 Try using custom_wordlist.txt with all the answers from [the custom expansions here](https://github.com/z64/dah-cards) for even more hilarity.
