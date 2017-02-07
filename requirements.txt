@@ -1,0 +1,3 @@
+markovify>=0.5.4
+Unidecode>=0.4.19
+pillow>=1.1.4
